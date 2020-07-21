@@ -24,7 +24,8 @@
       let last
       // 设置填充颜色
       ctx.fillStyle = 'black'
-      ctx.storkeStyle = 'none'
+      ctx.storkeStyle = 'black'
+      ctx.lineCap = 'round'
 
       /**
        * 划线函数
@@ -37,7 +38,7 @@
         ctx.beginPath() // 开始划线
         ctx.moveTo(x1, y1) // 设置起点状态
         ctx.lineTo(x2, y2) // 设置末端状态
-        ctx.lineWidth = 3 // 设置线宽状态
+        ctx.lineWidth = 10 // 设置线宽状态
         ctx.strokeStyle = '#222' // 设置线的颜色状态
         ctx.stroke() // 进行绘制
       }
