@@ -1,21 +1,81 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>画板</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>画板</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-  </style>
-</head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script>
+      // 获取 canvas 元素
+      let canvas = document.getElementById('canvas')
+      // 设置 canvas 的宽度和高度
+      canvas.width = document.documentElement.clientWidth
+      canvas.height = document.documentElement.clientHeight
 
-<body>
-  画板
-</body>
+      // 获取画笔
+      var ctx = canvas.getContext('2d')
+      // 是否可以画画的信号量
+      let painting = false
+      // 上一次的坐标信息
+      let last
+      // 设置填充颜色
+      ctx.fillStyle = 'black'
+      ctx.storkeStyle = 'none'
 
+      /**
+       * 划线函数
+       * @param {*} x1 开始的x坐标
+       * @param {*} y1 开始的y坐标
+       * @param {*} x2 结束的x坐标
+       * @param {*} y2 结束的y坐标
+       */
+      function drawLine(x1, y1, x2, y2) {
+        ctx.beginPath() // 开始划线
+        ctx.moveTo(x1, y1) // 设置起点状态
+        ctx.lineTo(x2, y2) // 设置末端状态
+        ctx.lineWidth = 3 // 设置线宽状态
+        ctx.strokeStyle = '#222' // 设置线的颜色状态
+        ctx.stroke() // 进行绘制
+      }
+
+      // 判断设备是否支持触摸
+      let isTouchDevice = 'ontouchstart' in document.documentElement
+      // 根据是否支持触摸执行不同的逻辑
+      if (isTouchDevice) {
+        console.log('支持触屏')
+        canvas.ontouchstart = e => {
+          last = [e.touches[0].clientX, e.touches[0].clientY]
+        }
+        canvas.ontouchmove = e => {
+          // 划线
+          drawLine(last[0], last[1], e.touches[0].clientX, e.touches[0].clientY)
+          // 重新赋值
+          last = [e.touches[0].clientX, e.touches[0].clientY]
+        }
+      } else {
+        console.log('不支持触屏')
+        canvas.onmousedown = e => {
+          painting = true
+          last = [e.clientX, e.clientY]
+        }
+
+        canvas.onmousemove = e => {
+          if (painting) {
+            // 划线
+            drawLine(last[0], last[1], e.clientX, e.clientY)
+            // 重新赋值
+            last = [e.clientX, e.clientY]
+          }
+        }
+
+        canvas.onmouseup = () => {
+          painting = false
+        }
+      }
+    </script>
+  </body>
 </html>
